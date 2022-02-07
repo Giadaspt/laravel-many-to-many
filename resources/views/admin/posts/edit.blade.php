@@ -41,7 +41,37 @@
             {{$message}}
           </p>
         @enderror
+
+        <div class="mt-3">
+          <label for="content" class="form-label">Seleziona una categoria</label>
+          <select name="category_id" id="category_id" class="form-control" >
+            <option>Scegli la categoria</option>
+  
+            @foreach ($categories as $category)
+              <option @if ($category->id == old('category_id', $post->category_id)) selected
+              @endif value="{{$category->id}}">{{ $category->name }}</option>
+            @endforeach
+          </select> 
+        </div>
       </div>
+      
+      <div class="mt-3">
+        <p> Tag </p>
+        @foreach ($tags as $tag)
+         <input type="checkbox" 
+         value="{{ $tag->id}}"
+         name="tags[]"
+         id="tag{{ $loop->iteration }}"
+
+         @if (!$errors->any() && $post->tags->contains($tag->id) )
+           checked
+         @elseif ($errors->any() && in_array($tag->id, old('tags', [])))
+           checked
+         @endif>
+         <label class="mr-3" for="tag{{ $loop->iteration }}">{{$tag->name}}</label>
+        @endforeach
+     </div>
+
       <section  class="d-flex justify-content-between">
         <button class="btn btn-primary mr-2">
           <a class="text-white" href=" {{ URL::previous() }} "> Indietro </a>
@@ -55,6 +85,7 @@
           </button>
         </div>
       </section>
+
     </form>
   </div>
 @endsection

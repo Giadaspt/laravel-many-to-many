@@ -11,6 +11,13 @@
         @if ($post->category)
           <h4>{{ $post->category->name }}</h4>
         @endif
+        @forelse ($post->tags as $tag)
+            <span class="badge bg-success text-white">
+                {{ $tag->name }}
+              </span>
+              @empty
+                 - 
+              @endforelse
         <p>
           {{ $post->content }}
         </p>

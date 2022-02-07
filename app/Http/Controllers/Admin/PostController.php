@@ -8,6 +8,7 @@ use App\Post;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -22,8 +23,9 @@ class PostController extends Controller
                         ->paginate(5);
 
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.posts.index', compact('posts', 'categories'));
+        return view('admin.posts.index', compact('posts', 'categories', 'tags'));
     }
 
     /**
@@ -34,8 +36,9 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.posts.create', compact('categories'));
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -49,7 +52,8 @@ class PostController extends Controller
         $request->validate($this->makeValid(), $this->makeMessage());
 
         $data = $request->all();
-        
+        // dd($data);
+
         $new_post = new Post();
         // $new_post->title = $data['title'];
         // $new_post->content = $data['content'];
@@ -57,6 +61,10 @@ class PostController extends Controller
 
         $new_post->slug = Post::makeSlug($data['title']);
         $new_post->save();
+
+        if(array_key_exists('tags', $data)){
+            $new_post->tags()->attach($data['tags']);
+        }
 
         return redirect()->route('admin.posts.show', $new_post);
 
@@ -74,6 +82,8 @@ class PostController extends Controller
 
         $categories = Category::all();
 
+        $tags = Tag::all();
+
         if($post){
             return view('admin.posts.show', compact('post', 'categories'));
         }
@@ -89,9 +99,11 @@ class PostController extends Controller
     public function edit($id)
     {
        $post = Post::find($id);
+       $categories = Category::all();
+       $tags = Tag::all();
 
        if($post){
-        return view('admin.posts.edit', compact('post'));
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
        }
        abort(404, "Qeusta pagina non esiste");
     }
@@ -115,6 +127,10 @@ class PostController extends Controller
         };
         
         $post->update($data);
+
+        if(array_key_exists('tags', $data)){
+            $post->tags()->sync($data['tags']);
+        }
 
         return redirect()->route('admin.posts.show', compact('post'));
     }

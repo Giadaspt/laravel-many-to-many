@@ -16,6 +16,7 @@
           <th scope="col">Title</th>
           <th scope="col">Content</th>
           <th scope="col">Category</th>
+          <th scope="col">Tag</th>
         </tr>
       </thead>
       <tbody>
@@ -30,6 +31,15 @@
             @else
             <td> - </td>
             @endif
+            <td>
+            @forelse ($post->tags as $tag)
+              <span class="badge bg-success text-white">
+                {{ $tag->name }}
+              </span>
+              @empty
+                 - 
+              @endforelse
+            </td>
             <td>
               <button class="btn btn-info">
                 <a class="text-white" href="{{ route('admin.posts.show', $post) }}"> Show </a>

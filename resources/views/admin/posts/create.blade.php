@@ -44,7 +44,7 @@
           </p>
         @enderror
 
-        <div>
+        <div class="mt-3">
           <label for="content" class="form-label">Seleziona una categoria</label>
           <select name="category_id" id="category_id" class="form-control" >
             <option>Scegli la categoria</option>
@@ -53,8 +53,21 @@
               <option @if ($category->id == old('category_id')) selected
               @endif value="{{$category->id}}">{{ $category->name }}</option>
             @endforeach
-  
           </select> 
+        </div>
+
+        <div class="mt-3">
+           <p> Tag </p>
+           @foreach ($tags as $tag)
+            <input type="checkbox" 
+            value="{{ $tag->id}}"
+            name="tags[]"
+            id="tag{{ $loop->iteration }}"
+            @if (in_array($tag->id, old('tags', [])))
+              checked
+            @endif>
+            <label class="mr-3" for="tag{{ $loop->iteration }}">{{$tag->name}}</label>
+           @endforeach
         </div>
       </div>
 
